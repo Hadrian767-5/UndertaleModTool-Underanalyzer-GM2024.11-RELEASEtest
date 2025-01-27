@@ -139,7 +139,7 @@ namespace UndertaleModLib.Compiler
             // Clear the dictionary first and set the worst case max size so that we don't resize it over and over
             assetIds.Clear();
             scripts.Clear();
-            if (Data is null) return;
+            if (Data == null) return;
             
             int maxSize = 0;
             maxSize += Data.GameObjects?.Count ?? 0;
@@ -160,21 +160,21 @@ namespace UndertaleModLib.Compiler
             assetIds.EnsureCapacity(maxSize);
             scripts.EnsureCapacity(Data.Scripts?.Count ?? 0);
 
-            AddAssetsFromList(Data.GameObjects, RefType.Object);
-            AddAssetsFromList(Data.Sprites, RefType.Sprite);
-            AddAssetsFromList(Data.Sounds, RefType.Sound);
-            AddAssetsFromList(Data.Backgrounds, RefType.Background);
-            AddAssetsFromList(Data.Paths, RefType.Path);
-            AddAssetsFromList(Data.Fonts, RefType.Font);
-            AddAssetsFromList(Data.Timelines, RefType.Timeline);
+            AddAssetsFromList(Data.GameObjects ?? new List<UndertaleNamedResource>(), RefType.Object);
+            AddAssetsFromList(Data.Sprites ?? new List<UndertaleNamedResource>(), RefType.Sprite);
+            AddAssetsFromList(Data.Sounds ?? new List<UndertaleNamedResource>(), RefType.Sound);
+            AddAssetsFromList(Data.Backgrounds ?? new List<UndertaleNamedResource>(), RefType.Background);
+            AddAssetsFromList(Data.Paths ?? new List<UndertaleNamedResource>(), RefType.Path);
+            AddAssetsFromList(Data.Fonts ?? new List<UndertaleNamedResource>(), RefType.Font);
+            AddAssetsFromList(Data.Timelines ?? new List<UndertaleNamedResource>(), RefType.Timeline);
             if (!GMS2_3)
-                AddAssetsFromList(Data.Scripts, RefType.Script /* not actually used */);
-            AddAssetsFromList(Data.Shaders, RefType.Shader);
-            AddAssetsFromList(Data.Rooms, RefType.Room);
-            AddAssetsFromList(Data.AudioGroups, RefType.Sound /* apparently? */);
-            AddAssetsFromList(Data.AnimationCurves, RefType.AnimCurve);
-            AddAssetsFromList(Data.Sequences, RefType.Sequence);
-            AddAssetsFromList(Data.ParticleSystems, RefType.ParticleSystem);
+                AddAssetsFromList(Data.Scripts ?? new List<UndertaleNamedResource>(), RefType.Script /* not actually used */);
+            AddAssetsFromList(Data.Shaders ?? new List<UndertaleNamedResource>(), RefType.Shader);
+            AddAssetsFromList(Data.Rooms ?? new List<UndertaleNamedResource>(), RefType.Room);
+            AddAssetsFromList(Data.AudioGroups ?? new List<UndertaleNamedResource>(), RefType.Sound /* apparently? */);
+            AddAssetsFromList(Data.AnimationCurves ?? new List<UndertaleNamedResource>(), RefType.AnimCurve);
+            AddAssetsFromList(Data.Sequences ?? new List<UndertaleNamedResource>(), RefType.Sequence);
+            AddAssetsFromList(Data.ParticleSystems ?? new List<UndertaleNamedResource>(), RefType.ParticleSystem);
 
             if (Data.Scripts is not null)
             {
@@ -218,9 +218,15 @@ namespace UndertaleModLib.Compiler
             {
                 for (int i = 0; i < list.Count; i++)
                 {
+                    if (list[i] == null || list[i].Name == null)
+                        continue;
                     string name = list[i].Name?.Content;
                     if (name != null)
                         assetIds[name] = i;
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        assetIds[name] = i;
+                    }
                 }
             }
         }
